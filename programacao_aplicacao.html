@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Programação de Aplicação — Top Gun</title>
 
-<!-- Bootstrap 5 + Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -20,7 +19,6 @@
 <body>
 <div class="container py-4">
 
-  <!-- TOPO -->
   <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
     <div class="d-flex align-items-center gap-2">
       <i class="bi bi-calendar-check text-primary fs-4"></i>
@@ -33,7 +31,6 @@
   </div>
 
   <div class="row g-3">
-    <!-- FORM -->
     <div class="col-12 col-lg-8">
       <div class="card">
         <div class="card-body">
@@ -163,7 +160,6 @@
       </div>
     </div>
 
-    <!-- Preview -->
     <div class="col-12 col-lg-4">
       <div class="card h-100">
         <div class="card-body">
@@ -178,14 +174,12 @@
     </div>
   </div>
 
-  <!-- Botão voltar no final -->
   <div class="text-center mt-4">
     <a href="index.html" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar para o Início
     </a>
   </div>
 
-  <!-- Toast -->
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
     <div id="toastCopiado" class="toast align-items-center text-bg-success border-0" role="alert">
       <div class="d-flex">
@@ -209,6 +203,7 @@
     'SP':['Usina Gasa (Andradina - SP)','Usina Rafard (Rafard - SP)','Usina São Francisco (Elias Fausto - SP)','Usina Barra Bonita (Barra Bonita - SP)','Usina Costa Pinto (Piracicaba - SP)','Usina Leme (Leme - SP)','Usina Destivale (Araçatuba - SP)','Usina Mundial (Mirandópolis - SP)','Usina Ipaussu (Ipaussu - SP)','Usina Diamante (Jaú - SP)','Usina Univalem (Valparaíso - SP)','Usina Benálcool (Bento de Abreu - SP)']
   };
 
+  // Estado → Unidade
   const estadoSel=document.getElementById('estado');
   const unidadeSel=document.getElementById('unidade');
   estadoSel.addEventListener('change',()=>{
@@ -222,73 +217,55 @@
     });
   });
 
+  // Frente → Piloto
   const frenteSel=document.getElementById('frente');
   const pilotoInp=document.getElementById('piloto');
   frenteSel.addEventListener('change',()=>{pilotoInp.value=frenteSel.value?(FRentesPilotos[frenteSel.value]||''):'';});
 
-  const osInp=document.getElementById('os'),codigoInp=document.getElementById('codigo'),
-        fazendaInp=document.getElementById('fazenda'),areaInp=document.getElementById('area'),
-        operacaoInp=document.getElementById('operacao'),insumosTA=document.getElementById('insumos');
-  let debounceTimer;
-
-  osInp.addEventListener('input',()=>{clearTimeout(debounceTimer);const v=osInp.value.trim();if(!v){clearOSFields();return;}debounceTimer=setTimeout(()=>fetchOS(v),350);});
-  document.getElementById('btnBuscarOS').addEventListener('click',()=>{const v=osInp.value.trim();if(v)fetchOS(v);});
-
-  function clearOSFields(){codigoInp.value='';fazendaInp.value='';areaInp.value='';operacaoInp.value='';insumosTA.value='';}
-
-  // helper JSONP (evita CORS)
+  // ===== JSONP helper (evita CORS) =====
   function jsonp(url){
     return new Promise((resolve, reject) => {
       const cb = '__jsonp_' + Math.random().toString(36).slice(2);
       const s  = document.createElement('script');
       const hasQuery = url.includes('?');
       const sep = hasQuery ? '&' : '?';
-      s.src = `${url}${hasQuery && url.includes('callback=') ? '' : sep + 'callback=' + cb}`;
-      window[cb] = (data) => {
-        resolve(data);
-        delete window[cb];
-        s.remove();
-      };
-      s.onerror = () => {
-        delete window[cb];
-        s.remove();
-        reject(new Error('Falha no JSONP'));
-      };
+      s.src = url + sep + 'callback=' + cb;
+      window[cb] = (data) => { resolve(data); delete window[cb]; s.remove(); };
+      s.onerror = () => { delete window[cb]; s.remove(); reject(new Error('Falha no JSONP')); };
       document.body.appendChild(s);
     });
   }
 
+  // Busca por OS (auto + botão)
+  const osInp=document.getElementById('os'),codigoInp=document.getElementById('codigo'),
+        fazendaInp=document.getElementById('fazenda'),areaInp=document.getElementById('area'),
+        operacaoInp=document.getElementById('operacao'),insumosTA=document.getElementById('insumos');
+  let debounceTimer;
+  osInp.addEventListener('input',()=>{clearTimeout(debounceTimer);const v=osInp.value.trim();if(!v){clearOSFields();return;}debounceTimer=setTimeout(()=>fetchOS(v),350);});
+  document.getElementById('btnBuscarOS').addEventListener('click',()=>{const v=osInp.value.trim();if(v)fetchOS(v);});
+
+  function clearOSFields(){codigoInp.value='';fazendaInp.value='';areaInp.value='';operacaoInp.value='';insumosTA.value='';}
+
   async function fetchOS(osValue){
     try{
-      let url = new URL(APPS_SCRIPT_URL);
-      url.searchParams.set('os', osValue);
-      // chama via JSONP
-      const js = await jsonp(url.toString());
-
-      if(!js.ok || !js.rows || !js.rows.length){ clearOSFields(); return; }
-      const row = js.rows.find(x => String(x.OS) === osValue) || js.rows[0];
-
+      const url = `${APPS_SCRIPT_URL}?os=${encodeURIComponent(osValue)}`;
+      const js = await jsonp(url); // ← JSONP aqui
+      if(!js.ok||!js.rows||!js.rows.length){clearOSFields();return;}
+      const row = js.rows.find(x=>String(x.OS)===String(osValue)) || js.rows[0];
       const get = k => row[k] ?? row[k?.toUpperCase()] ?? '';
-      codigoInp.value  = get('CODIGO');
-      fazendaInp.value = get('FAZENDA');
-      areaInp.value    = (get('AREA (HA)') || '').toString().replace(',','.');
-      operacaoInp.value= get('OPERACAO');
-      insumosTA.value  = get('INSUMOS');
-
-      const objetivoSel = document.getElementById('objetivo');
-      const objetivoStr = get('OBJETIVO');
-      if (objetivoStr) {
-        [...objetivoSel.options].forEach(o=>{
-          if (o.value.toUpperCase() === objetivoStr.toUpperCase()) objetivoSel.value = o.value;
-        });
-      }
+      codigoInp.value=get('CODIGO');
+      fazendaInp.value=get('FAZENDA');
+      areaInp.value=(get('AREA (HA)')||'').toString().replace(',','.');
+      operacaoInp.value=get('OPERACAO');
+      insumosTA.value=get('INSUMOS');
+      const objetivoSel=document.getElementById('objetivo');
+      const objetivoStr=get('OBJETIVO');
+      if(objetivoStr){[...objetivoSel.options].forEach(o=>{if(o.value.toUpperCase()===String(objetivoStr).toUpperCase())objetivoSel.value=o.value;});}
       gerarTexto();
-    }catch(e){
-      console.error(e);
-      clearOSFields();
-    }
+    }catch(e){ console.error(e); clearOSFields(); }
   }
 
+  // Geração do texto + copiar + Whats
   const preview=document.getElementById('preview'),badgeFaz=document.getElementById('badgeFaz'),
         badgeArea=document.getElementById('badgeArea'),btnGerar=document.getElementById('btnGerar'),
         btnCopiar=document.getElementById('btnCopiar'),btnWhats=document.getElementById('btnWhats');
