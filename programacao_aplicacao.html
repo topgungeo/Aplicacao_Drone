@@ -422,11 +422,19 @@
 *Tipo de Produto:* ${tipoProduto||'-'}`;
 
     const resumo =
-`\n*Resumo:*
+`\n*Resumo Geral:*
 *Qtd. Fazendas:* ${totalFaz}
 *Qtd. Área (ha):* ${Number(totalArea.toFixed(2))}`;
 
-    const textoFinal = header + '\n\n' + blocos.join('\n\n') + resumo + (obs ? `\n\n*Observações:* ${obs}` : '');
+    // separador entre OS (após cada bloco) — conforme pedido
+    const sepLine = '_______';
+    let blocosTexto = '';
+    if (blocos.length) {
+      // adiciona a linha de separador após cada bloco
+      blocosTexto = blocos.map(b => b + '\n' + sepLine).join('\n\n');
+    }
+
+    const textoFinal = header + (blocosTexto ? ('\n\n' + blocosTexto + '\n\n') : '\n\n') + resumo + (obs ? `\n\n*Observações:* ${obs}` : '');
 
     preview.textContent = textoFinal;
     document.getElementById('btnWhats').href = 'https://wa.me/?text=' + encodeURIComponent(textoFinal);
