@@ -355,7 +355,10 @@
       if (!isNaN(v)) totalArea += v;
     });
     document.getElementById('badgeFaz').textContent  = `Fazendas: ${totalFaz}`;
-    document.getElementById('badgeArea').textContent = `Área: ${Number(totalArea.toFixed(2))} ha`;
+    // formata com 2 casas e vírgula decimal, ex: 8,25 ha
+    const totalAreaFixed = Number(totalArea.toFixed(2));
+    const totalAreaFmt = totalAreaFixed.toFixed(2).replace('.',',') + ' ha';
+    document.getElementById('badgeArea').textContent = `Área: ${totalAreaFmt}`;
   }
 
   // ===== GERAÇÃO DO TEXTO/WHATS/COPIAR =====
@@ -394,8 +397,9 @@
       const v = parseFloat((areaStr||'').toString().replace(',','.'));
       if (!isNaN(v)) totalArea += v;
 
-      // (HA) na frente do número
-      const areaFmt = areaStr ? `(HA) ${areaStr}` : '-';
+  // formata área: ex. "8.76 ha" — remove 'ha' duplicado caso já exista
+  const areaClean = (areaStr || '').toString().replace(/\s*ha$/i, '').trim();
+  const areaFmt = areaClean ? `${areaClean} ha` : '-';
 
       const bloco =
 `*📋 OS:* ${os || '-'}
@@ -421,10 +425,13 @@
 *Objetivo:* ${objetivo||'-'}
 *Tipo de Produto:* ${tipoProduto||'-'}`;
 
-    const resumo =
+  // formata total de área com vírgula e unidade
+  const totalAreaFixed = Number(totalArea.toFixed(2));
+  const totalAreaFmt = totalAreaFixed.toFixed(2).replace('.',',') + ' ha';
+  const resumo =
 `\n*Resumo Geral:*
 *Qtd. Fazendas:* ${totalFaz}
-*Qtd. Área (ha):* ${Number(totalArea.toFixed(2))}`;
+*Qtd. Área (ha):* ${totalAreaFmt}`;
 
     // separador entre OS (após cada bloco) — conforme pedido
     const sepLine = '_______';
