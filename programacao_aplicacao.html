@@ -236,25 +236,57 @@
 
   function clearOSFields(){codigoInp.value='';fazendaInp.value='';areaInp.value='';operacaoInp.value='';insumosTA.value='';}
 
+  // helper JSONP (evita CORS)
+  function jsonp(url){
+    return new Promise((resolve, reject) => {
+      const cb = '__jsonp_' + Math.random().toString(36).slice(2);
+      const s  = document.createElement('script');
+      const hasQuery = url.includes('?');
+      const sep = hasQuery ? '&' : '?';
+      s.src = `${url}${hasQuery && url.includes('callback=') ? '' : sep + 'callback=' + cb}`;
+      window[cb] = (data) => {
+        resolve(data);
+        delete window[cb];
+        s.remove();
+      };
+      s.onerror = () => {
+        delete window[cb];
+        s.remove();
+        reject(new Error('Falha no JSONP'));
+      };
+      document.body.appendChild(s);
+    });
+  }
+
   async function fetchOS(osValue){
     try{
-      const url=new URL(APPS_SCRIPT_URL);
-      url.searchParams.set('os',osValue);
-      const r=await fetch(url);
-      const js=await r.json();
-      if(!js.ok||!js.rows||!js.rows.length){clearOSFields();return;}
-      const row=js.rows.find(x=>String(x.OS)===osValue)||js.rows[0];
-      const get=k=>row[k]??row[k?.toUpperCase()]??'';
-      codigoInp.value=get('CODIGO');
-      fazendaInp.value=get('FAZENDA');
-      areaInp.value=(get('AREA (HA)')||'').toString().replace(',','.');
-      operacaoInp.value=get('OPERACAO');
-      insumosTA.value=get('INSUMOS');
-      const objetivoSel=document.getElementById('objetivo');
-      const objetivoStr=get('OBJETIVO');
-      if(objetivoStr){[...objetivoSel.options].forEach(o=>{if(o.value.toUpperCase()===objetivoStr.toUpperCase())objetivoSel.value=o.value;});}
+      let url = new URL(APPS_SCRIPT_URL);
+      url.searchParams.set('os', osValue);
+      // chama via JSONP
+      const js = await jsonp(url.toString());
+
+      if(!js.ok || !js.rows || !js.rows.length){ clearOSFields(); return; }
+      const row = js.rows.find(x => String(x.OS) === osValue) || js.rows[0];
+
+      const get = k => row[k] ?? row[k?.toUpperCase()] ?? '';
+      codigoInp.value  = get('CODIGO');
+      fazendaInp.value = get('FAZENDA');
+      areaInp.value    = (get('AREA (HA)') || '').toString().replace(',','.');
+      operacaoInp.value= get('OPERACAO');
+      insumosTA.value  = get('INSUMOS');
+
+      const objetivoSel = document.getElementById('objetivo');
+      const objetivoStr = get('OBJETIVO');
+      if (objetivoStr) {
+        [...objetivoSel.options].forEach(o=>{
+          if (o.value.toUpperCase() === objetivoStr.toUpperCase()) objetivoSel.value = o.value;
+        });
+      }
       gerarTexto();
-    }catch(e){console.error(e);}
+    }catch(e){
+      console.error(e);
+      clearOSFields();
+    }
   }
 
   const preview=document.getElementById('preview'),badgeFaz=document.getElementById('badgeFaz'),
