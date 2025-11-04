@@ -197,7 +197,7 @@
 </div>
 
 <script>
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0wYo2B8wXXv_SqVwVayNkDtG_UsroXNXfLk970sHff6cIXnayykA3DYqtrt0ldefP/exec';
+  const APPS_SCRIPT_URL = 'https://script.googleusercontent.com/a/macros/pulverizacoes.com/echo?user_content_key=AehSKLjq5snIyejjtnkNVy5LMRexagGwwc_9VNOA8EUDNS1vOrf8Zoy_ue7brNskMbB-zEVS57nHLZ-_XX8-4HQxGN_fZ7DV3P-4weXySAMUoZkhK47E10K9PujnO8cKpkbZ_VIPFPZQP1x9jxilvrvf8key_V2j_9TXLAOGdcQQjiHfc9pg6Iq0_IwZzkar-D9i2cznMGpJZkz_pjFhhMjq3UjFI7n8CajKg8FGXuGM2BFd0DATlCGj50VkhMqTVf5RzfqssvNDqjsp0PQJrZtH0qyk_Zr7PYkrlJ30dJ95vSv_9Af_vtk10xlS-3xYIg&lib=MYJUHdXjVyNR6o3-L6w8fKnB-QGCKAykT';
 
   const FRentesPilotos = {
     'Frente 1':'Matheus Pias','Frente 2':'Maicon Silva','Frente 3':'Alexandre Alves',
@@ -208,18 +208,28 @@
     'SP':['Usina Gasa (Andradina - SP)','Usina Rafard (Rafard - SP)','Usina São Francisco (Elias Fausto - SP)','Usina Barra Bonita (Barra Bonita - SP)','Usina Costa Pinto (Piracicaba - SP)','Usina Leme (Leme - SP)','Usina Destivale (Araçatuba - SP)','Usina Mundial (Mirandópolis - SP)','Usina Ipaussu (Ipaussu - SP)','Usina Diamante (Jaú - SP)','Usina Univalem (Valparaíso - SP)','Usina Benálcool (Bento de Abreu - SP)']
   };
 
-  // Estado → Unidade
-  estadoSel.addEventListener?.call(document.getElementById('estado'),'change',function(){
-    const unidadeSel=document.getElementById('unidade');
-    unidadeSel.innerHTML='';
-    const uf=this.value;
-    if(!uf){unidadeSel.disabled=true;unidadeSel.innerHTML='<option>Selecione o Estado</option>';return;}
-    unidadeSel.disabled=false;
-    unidadeSel.insertAdjacentHTML('beforeend','<option value="">Selecione...</option>');
-    (UnidadesPorEstado[uf]||[]).forEach(u=>{
-      const o=document.createElement('option');o.value=u;o.textContent=u;unidadeSel.appendChild(o);
-    });
+  // Estado → Unidade (corrigido)
+const estadoSel = document.getElementById('estado');
+const unidadeSel = document.getElementById('unidade');
+
+estadoSel.addEventListener('change', function() {
+  unidadeSel.innerHTML = '';
+  const uf = this.value;
+  if (!uf) {
+    unidadeSel.disabled = true;
+    unidadeSel.innerHTML = '<option>Selecione o Estado</option>';
+    return;
+  }
+  unidadeSel.disabled = false;
+  unidadeSel.insertAdjacentHTML('beforeend', '<option value="">Selecione...</option>');
+  (UnidadesPorEstado[uf] || []).forEach(u => {
+    const o = document.createElement('option');
+    o.value = u;
+    o.textContent = u;
+    unidadeSel.appendChild(o);
   });
+});
+
 
   // Frente → Piloto
   document.getElementById('frente').addEventListener('change',function(){
@@ -355,4 +365,5 @@
 </script>
 </body>
 </html>
+
 
