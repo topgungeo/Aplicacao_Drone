@@ -32,24 +32,6 @@
     </a>
   </div>
 
-  <!-- Endpoint -->
-  <div class="card mb-3">
-    <div class="card-body d-flex flex-wrap gap-3 align-items-center">
-      <div class="d-flex align-items-center gap-2">
-        <i class="bi bi-cloud"></i>
-        <div>
-          <div class="small text-secondary">Endpoint do Apps Script</div>
-          <code id="endpointView" class="user-select-all">defina APPS_SCRIPT_URL no código</code>
-        </div>
-      </div>
-      <div class="ms-auto">
-        <a id="openSheetLink" class="btn btn-outline-secondary btn-sm d-none" target="_blank" rel="noopener">
-          <i class="bi bi-box-arrow-up-right"></i> Abrir Planilha
-        </a>
-      </div>
-    </div>
-  </div>
-
   <div class="row g-3">
     <!-- FORM -->
     <div class="col-12 col-lg-8">
@@ -138,16 +120,19 @@
 
             <div class="col-12"><hr></div>
 
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6">
               <label class="form-label">OS</label>
-              <input id="os" class="form-control" placeholder="Digite a OS">
+              <div class="input-group">
+                <input id="os" class="form-control" placeholder="Digite a OS">
+                <button id="btnBuscarOS" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+              </div>
               <div class="form-text">Busca automática na planilha.</div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <label class="form-label">Código</label>
               <input id="codigo" class="form-control" readonly>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <label class="form-label">Fazenda</label>
               <input id="fazenda" class="form-control" readonly>
             </div>
@@ -169,15 +154,9 @@
             </div>
 
             <div class="col-12 d-flex flex-wrap gap-2 mt-2">
-              <button id="btnGerar" class="btn btn-primary">
-                <i class="bi bi-chat-left-text"></i> Gerar texto
-              </button>
-              <button id="btnCopiar" class="btn btn-outline-secondary">
-                <i class="bi bi-clipboard"></i> Copiar
-              </button>
-              <a id="btnWhats" class="btn btn-success" target="_blank" rel="noopener">
-                <i class="bi bi-whatsapp"></i> WhatsApp
-              </a>
+              <button id="btnGerar" class="btn btn-primary"><i class="bi bi-chat-left-text"></i> Gerar texto</button>
+              <button id="btnCopiar" class="btn btn-outline-secondary"><i class="bi bi-clipboard"></i> Copiar</button>
+              <a id="btnWhats" class="btn btn-success" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
             </div>
           </div>
         </div>
@@ -219,43 +198,17 @@
 </div>
 
 <script>
-  // Seu endpoint publicado:
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyumH5NY1N8AwoeQRpsvRQwUsCReGEwDQPYhX36iPGnxmgTcxc02tEZ5qe6QnLixOB2/exec';
-  const SHEET_OPEN_URL  = ''; // opcional
 
   const FRentesPilotos = {
-    'Frente 1':'Matheus Pias',
-    'Frente 2':'Maicon Silva',
-    'Frente 3':'Alexandre Alves',
-    'Frente 4':'Felipe Santos',
-    'Frente 5':'Luiz Paulo',
-    'Frente 6':'Sem Piloto Cadastrado na Frente',
-    'Frente 7':'Heitor Ferreira'
+    'Frente 1':'Matheus Pias','Frente 2':'Maicon Silva','Frente 3':'Alexandre Alves',
+    'Frente 4':'Felipe Santos','Frente 5':'Luiz Paulo','Frente 6':'Sem Piloto Cadastrado na Frente','Frente 7':'Heitor Ferreira'
   };
   const UnidadesPorEstado = {
-    'MG': [
-      'Delta - Delta',
-      'Delta - Volta Grande',
-      'Florestadora - Santa Cecília (João Pinheiro - MG)',
-      'Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)'
-    ],
-    'SP': [
-      'Usina Gasa (Andradina - SP)',
-      'Usina Rafard (Rafard - SP)',
-      'Usina São Francisco (Elias Fausto - SP)',
-      'Usina Barra Bonita (Barra Bonita - SP)',
-      'Usina Costa Pinto (Piracicaba - SP)',
-      'Usina Leme (Leme - SP)',
-      'Usina Destivale (Araçatuba - SP)',
-      'Usina Mundial (Mirandópolis - SP)',
-      'Usina Ipaussu (Ipaussu - SP)',
-      'Usina Diamante (Jaú - SP)',
-      'Usina Univalem (Valparaíso - SP)',
-      'Usina Benálcool (Bento de Abreu - SP)'
-    ]
+    'MG':['Delta - Delta','Delta - Volta Grande','Florestadora - Santa Cecília (João Pinheiro - MG)','Parque de Bioenergia Lagoa da Prata (Lagoa da Prata - MG)'],
+    'SP':['Usina Gasa (Andradina - SP)','Usina Rafard (Rafard - SP)','Usina São Francisco (Elias Fausto - SP)','Usina Barra Bonita (Barra Bonita - SP)','Usina Costa Pinto (Piracicaba - SP)','Usina Leme (Leme - SP)','Usina Destivale (Araçatuba - SP)','Usina Mundial (Mirandópolis - SP)','Usina Ipaussu (Ipaussu - SP)','Usina Diamante (Jaú - SP)','Usina Univalem (Valparaíso - SP)','Usina Benálcool (Bento de Abreu - SP)']
   };
 
-  // Estado → Unidade
   const estadoSel=document.getElementById('estado');
   const unidadeSel=document.getElementById('unidade');
   estadoSel.addEventListener('change',()=>{
@@ -269,122 +222,80 @@
     });
   });
 
-  // Frente → Piloto
   const frenteSel=document.getElementById('frente');
   const pilotoInp=document.getElementById('piloto');
   frenteSel.addEventListener('change',()=>{pilotoInp.value=frenteSel.value?(FRentesPilotos[frenteSel.value]||''):'';});
 
-  // Mostrar endpoint
-  document.getElementById('endpointView').textContent=APPS_SCRIPT_URL;
-  if(SHEET_OPEN_URL){const l=document.getElementById('openSheetLink');l.classList.remove('d-none');l.href=SHEET_OPEN_URL;}
-
-  // Busca por OS
-  const osInp=document.getElementById('os'),
-        codigoInp=document.getElementById('codigo'),
-        fazendaInp=document.getElementById('fazenda'),
-        areaInp=document.getElementById('area'),
-        operacaoInp=document.getElementById('operacao'),
-        insumosTA=document.getElementById('insumos');
-
+  const osInp=document.getElementById('os'),codigoInp=document.getElementById('codigo'),
+        fazendaInp=document.getElementById('fazenda'),areaInp=document.getElementById('area'),
+        operacaoInp=document.getElementById('operacao'),insumosTA=document.getElementById('insumos');
   let debounceTimer;
-  osInp.addEventListener('input',()=>{
-    clearTimeout(debounceTimer);
-    const v=osInp.value.trim();
-    if(!v){clearOSFields();return;}
-    debounceTimer=setTimeout(()=>fetchOS(v),350);
-  });
 
-  function clearOSFields(){
-    codigoInp.value='';fazendaInp.value='';areaInp.value='';
-    operacaoInp.value='';insumosTA.value='';
-  }
+  osInp.addEventListener('input',()=>{clearTimeout(debounceTimer);const v=osInp.value.trim();if(!v){clearOSFields();return;}debounceTimer=setTimeout(()=>fetchOS(v),350);});
+  document.getElementById('btnBuscarOS').addEventListener('click',()=>{const v=osInp.value.trim();if(v)fetchOS(v);});
+
+  function clearOSFields(){codigoInp.value='';fazendaInp.value='';areaInp.value='';operacaoInp.value='';insumosTA.value='';}
 
   async function fetchOS(osValue){
     try{
       const url=new URL(APPS_SCRIPT_URL);
       url.searchParams.set('os',osValue);
-      const r=await fetch(url.toString());
-      const js=await r.json(); // {ok:true, rows:[...]}
+      const r=await fetch(url);
+      const js=await r.json();
       if(!js.ok||!js.rows||!js.rows.length){clearOSFields();return;}
-      const row=js.rows.find(x=>String(x.OS).trim()===osValue)||js.rows[0];
-
+      const row=js.rows.find(x=>String(x.OS)===osValue)||js.rows[0];
       const get=k=>row[k]??row[k?.toUpperCase()]??'';
       codigoInp.value=get('CODIGO');
       fazendaInp.value=get('FAZENDA');
       areaInp.value=(get('AREA (HA)')||'').toString().replace(',','.');
       operacaoInp.value=get('OPERACAO');
       insumosTA.value=get('INSUMOS');
-
       const objetivoSel=document.getElementById('objetivo');
       const objetivoStr=get('OBJETIVO');
-      if(objetivoStr){[...objetivoSel.options].forEach(o=>{if(o.value===objetivoStr)objetivoSel.value=objetivoStr;});}
-
+      if(objetivoStr){[...objetivoSel.options].forEach(o=>{if(o.value.toUpperCase()===objetivoStr.toUpperCase())objetivoSel.value=o.value;});}
       gerarTexto();
     }catch(e){console.error(e);}
   }
 
-  // Geração de texto / ações
-  const preview=document.getElementById('preview');
-  const badgeFaz=document.getElementById('badgeFaz');
-  const badgeArea=document.getElementById('badgeArea');
-  const btnGerar=document.getElementById('btnGerar');
-  const btnCopiar=document.getElementById('btnCopiar');
-  const btnWhats=document.getElementById('btnWhats');
-
+  const preview=document.getElementById('preview'),badgeFaz=document.getElementById('badgeFaz'),
+        badgeArea=document.getElementById('badgeArea'),btnGerar=document.getElementById('btnGerar'),
+        btnCopiar=document.getElementById('btnCopiar'),btnWhats=document.getElementById('btnWhats');
   btnGerar.addEventListener('click',gerarTexto);
-  btnCopiar.addEventListener('click',()=>{
-    navigator.clipboard.writeText(preview.textContent||'').then(()=>{
-      new bootstrap.Toast(document.getElementById('toastCopiado')).show();
-    });
-  });
+  btnCopiar.addEventListener('click',()=>{navigator.clipboard.writeText(preview.textContent||'').then(()=>{new bootstrap.Toast(document.getElementById('toastCopiado')).show();});});
 
   function gerarTexto(){
     const data=(document.getElementById('dataAplicacao').value||'').split('-').reverse().join('/');
-    const unidade=document.getElementById('unidade').value;
-    const frente =document.getElementById('frente').value;
-    const piloto =document.getElementById('piloto').value;
-    const auxiliar=document.getElementById('auxiliar').value;
-    const drone  =document.getElementById('drone').value;
-    const objetivo=document.getElementById('objetivo').value;
-    const tipoProd=document.getElementById('tipoProduto').value;
+    const unidade=document.getElementById('unidade').value,frente=document.getElementById('frente').value,piloto=document.getElementById('piloto').value,
+          auxiliar=document.getElementById('auxiliar').value,drone=document.getElementById('drone').value,objetivo=document.getElementById('objetivo').value,
+          tipoProd=document.getElementById('tipoProduto').value,os=document.getElementById('os').value,codigo=document.getElementById('codigo').value,
+          fazenda=document.getElementById('fazenda').value,area=document.getElementById('area').value,operacao=document.getElementById('operacao').value,
+          insumos=document.getElementById('insumos').value,obs=document.getElementById('observacoes').value.trim();
+    const blocoObs=obs?`\n*Observações:*  ${obs}`:'';
+    const txt=`📅 *Programação para aplicação:* ${data}
 
-    const os     =document.getElementById('os').value;
-    const codigo =document.getElementById('codigo').value;
-    const fazenda=document.getElementById('fazenda').value;
-    const area   =document.getElementById('area').value;
-    const operacao=document.getElementById('operacao').value;
-    const insumos=document.getElementById('insumos').value;
-    const obs    =document.getElementById('observacoes').value.trim();
+*Unidade:* ${unidade||'-'}
+*Frente:* ${frente||'-'}
+*Piloto:* ${piloto||'-'}
+*Auxiliar:* ${auxiliar||'-'}
+*Drone:* ${drone||'-'}
+*Objetivo:* ${objetivo||'-'}
+*Tipo de Produto:* ${tipoProd||'-'}
 
-    const blocoObs = obs ? `\n*Observações:*  ${obs}` : '';
+*📋 OS:* ${os||'-'}
+*Código:* ${codigo||'-'}
+*Fazenda:* ${fazenda||'-'}
 
-    const txt =
-`📅 *Programação para aplicação:* ${data}
-
-*Unidade:* ${unidade || '-'}
-*Frente:* ${frente || '-'}
-*Piloto:* ${piloto || '-'}
-*Auxiliar:* ${auxiliar || '-'}
-*Drone:* ${drone || '-'}
-*Objetivo:* ${objetivo || '-'}
-*Tipo de Produto:* ${tipoProd || '-'}
-
-*📋 OS:* ${os || '-'}
-*Código:* ${codigo || '-'}
-*Fazenda:* ${fazenda || '-'}
-
-*Área (ha):* ${area || '-'}
-*Operação:* ${operacao || '-'}
-*Insumos:* ${insumos || '-'}${blocoObs}
+*Área (ha):* ${area||'-'}
+*Operação:* ${operacao||'-'}
+*Insumos:* ${insumos||'-'}${blocoObs}
 
 *Resumo:*
-*Qtd. Fazendas:* ${fazenda ? 1 : 0}
-*Qtd. Área (ha):* ${area || 0}`;
-
-    preview.textContent = txt;
-    badgeFaz.textContent  = `Fazendas: ${fazenda ? 1 : 0}`;
-    badgeArea.textContent = `Área: ${area || 0} ha`;
-    btnWhats.href = 'https://wa.me/?text=' + encodeURIComponent(txt);
+*Qtd. Fazendas:* ${fazenda?1:0}
+*Qtd. Área (ha):* ${area||0}`;
+    preview.textContent=txt;
+    badgeFaz.textContent=`Fazendas: ${fazenda?1:0}`;
+    badgeArea.textContent=`Área: ${area||0} ha`;
+    btnWhats.href='https://wa.me/?text='+encodeURIComponent(txt);
   }
 </script>
 </body>
