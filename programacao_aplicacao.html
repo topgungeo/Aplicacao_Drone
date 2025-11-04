@@ -17,6 +17,10 @@
   .form-section-title{font-weight:600;font-size:1rem;color:#0d6efd;display:flex;align-items:center;gap:.5rem;}
   pre#preview{white-space:pre-wrap;min-height:260px;}
   label { display:inline-block; margin-bottom:.25rem; }
+  .fazenda-card{border:1px solid #e9ecef;border-radius:.75rem;padding:1rem;margin-bottom:.75rem;background:#fff}
+  /* traço separador entre as OS (cards) */
+  .fazenda-card + .fazenda-card{border-top:2px dashed #dee2e6; margin-top:.5rem; padding-top:1rem}
+  .badge-counter{font-weight:600}
 </style>
 </head>
 <body>
@@ -26,7 +30,7 @@
     <div class="d-flex align-items-center gap-2">
       <i class="bi bi-calendar-check text-primary fs-4"></i>
       <h1 class="h4 mb-0">Programação de Aplicação — Top Gun</h1>
-      <span class="badge text-bg-light border">v1</span>
+      <span class="badge text-bg-light border">v2</span>
     </div>
     <a href="index.html" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar para o Início
@@ -34,6 +38,7 @@
   </div>
 
   <div class="row g-3">
+    <!-- FORM PRINCIPAL -->
     <div class="col-12 col-lg-8">
       <div class="card">
         <div class="card-body">
@@ -117,62 +122,35 @@
                 <option>Fertilizante</option>
               </select>
             </div>
+          </div>
 
-            <div class="col-12"><hr></div>
+          <hr class="my-4">
 
-            <div class="col-12 col-md-6">
-              <label for="os" class="form-label">OS</label>
-              <div class="input-group">
-                <input id="os" class="form-control" placeholder="Digite a OS">
-                <button id="btnBuscarOS" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
-              </div>
-              <div class="form-text">Busca automática na planilha.</div>
-            </div>
-            <div class="col-12 col-md-3">
-              <label for="codigo" class="form-label">Código</label>
-              <input id="codigo" class="form-control" readonly>
-            </div>
-            <div class="col-12 col-md-3">
-              <label for="fazenda" class="form-label">Fazenda</label>
-              <input id="fazenda" class="form-control" readonly>
-            </div>
-            <div class="col-12 col-md-4">
-              <label for="area" class="form-label">Área (ha)</label>
-              <input id="area" class="form-control" readonly>
-            </div>
-            <div class="col-12 col-md-4">
-              <label for="operacao" class="form-label">Operação</label>
-              <input id="operacao" class="form-control" readonly>
-            </div>
-            <div class="col-12">
-              <label for="insumos" class="form-label">Insumos</label>
-              <textarea id="insumos" class="form-control" rows="2" readonly></textarea>
-            </div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="form-section-title mb-0"><i class="bi bi-building"></i> Fazendas</div>
+          </div>
 
-            <div class="col-12">
-              <label for="observacoes" class="form-label">Observações (opcional)</label>
-              <textarea id="observacoes" class="form-control" rows="2" placeholder="Preencha apenas se necessário"></textarea>
-            </div>
+          <!-- Container dinâmico de fazendas -->
+          <div id="fazendasContainer"></div>
 
-            <div class="col-12 d-flex flex-wrap gap-2 mt-2">
-              <button id="btnGerar" class="btn btn-primary"><i class="bi bi-chat-left-text"></i> Gerar texto</button>
-              <button id="btnCopiar" class="btn btn-outline-secondary"><i class="bi bi-clipboard"></i> Copiar</button>
-              <a id="btnWhats" class="btn btn-success" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
-            </div>
+          <div class="col-12 d-flex flex-wrap gap-2 mt-3">
+            <button id="btnGerar" class="btn btn-primary"><i class="bi bi-chat-left-text"></i> Gerar texto</button>
+            <button id="btnCopiar" class="btn btn-outline-secondary"><i class="bi bi-clipboard"></i> Copiar</button>
+            <a id="btnWhats" class="btn btn-success" target="_blank" rel="noopener"><i class="bi bi-whatsapp"></i> WhatsApp</a>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Preview -->
+    <!-- PRÉVIA -->
     <div class="col-12 col-lg-4">
       <div class="card h-100">
         <div class="card-body">
           <div class="form-section-title mb-2"><i class="bi bi-file-earmark-text"></i> Prévia do texto</div>
-          <pre id="preview" class="border rounded p-3 bg-light">Preencha os campos e clique em “Gerar texto”.</pre>
+          <pre id="preview" class="border rounded p-3 bg-light">Preencha e adicione as fazendas. Depois clique em “Gerar texto”.</pre>
           <div class="mt-2">
-            <span class="badge text-bg-light border me-1" id="badgeFaz">Fazendas: 0</span>
-            <span class="badge text-bg-light border" id="badgeArea">Área: 0 ha</span>
+            <span class="badge text-bg-light border me-1 badge-counter" id="badgeFaz">Fazendas: 0</span>
+            <span class="badge text-bg-light border badge-counter" id="badgeArea">Área: 0 ha</span>
           </div>
         </div>
       </div>
@@ -197,6 +175,7 @@
 </div>
 
 <script>
+  // ===== CONFIG =====
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw0wYo2B8wXXv_SqVwVayNkDtG_UsroXNXfLk970sHff6cIXnayykA3DYqtrt0ldefP/exec';
 
   const FRentesPilotos = {
@@ -208,43 +187,35 @@
     'SP':['Usina Gasa (Andradina - SP)','Usina Rafard (Rafard - SP)','Usina São Francisco (Elias Fausto - SP)','Usina Barra Bonita (Barra Bonita - SP)','Usina Costa Pinto (Piracicaba - SP)','Usina Leme (Leme - SP)','Usina Destivale (Araçatuba - SP)','Usina Mundial (Mirandópolis - SP)','Usina Ipaussu (Ipaussu - SP)','Usina Diamante (Jaú - SP)','Usina Univalem (Valparaíso - SP)','Usina Benálcool (Bento de Abreu - SP)']
   };
 
-  // Estado → Unidade (corrigido)
-const estadoSel = document.getElementById('estado');
-const unidadeSel = document.getElementById('unidade');
-
-estadoSel.addEventListener('change', function() {
-  unidadeSel.innerHTML = '';
-  const uf = this.value;
-  if (!uf) {
-    unidadeSel.disabled = true;
-    unidadeSel.innerHTML = '<option>Selecione o Estado</option>';
-    return;
-  }
-  unidadeSel.disabled = false;
-  unidadeSel.insertAdjacentHTML('beforeend', '<option value="">Selecione...</option>');
-  (UnidadesPorEstado[uf] || []).forEach(u => {
-    const o = document.createElement('option');
-    o.value = u;
-    o.textContent = u;
-    unidadeSel.appendChild(o);
+  // Estado → Unidade
+  const estadoSel = document.getElementById('estado');
+  const unidadeSel = document.getElementById('unidade');
+  estadoSel.addEventListener('change', function() {
+    unidadeSel.innerHTML = '';
+    const uf = this.value;
+    if (!uf) {
+      unidadeSel.disabled = true;
+      unidadeSel.innerHTML = '<option>Selecione o Estado</option>';
+      return;
+    }
+    unidadeSel.disabled = false;
+    unidadeSel.insertAdjacentHTML('beforeend', '<option value="">Selecione...</option>');
+    (UnidadesPorEstado[uf] || []).forEach(u => {
+      const o = document.createElement('option'); o.value = u; o.textContent = u; unidadeSel.appendChild(o);
+    });
   });
-});
-
 
   // Frente → Piloto
   document.getElementById('frente').addEventListener('change',function(){
     document.getElementById('piloto').value = this.value ? (FRentesPilotos[this.value]||'') : '';
   });
 
-  // ===== JSONP helper com log do src =====
+  // ===== JSONP =====
   function jsonp(urlString){
-    if(!/^https?:\/\//i.test(urlString)) throw new Error('URL JSONP precisa ser absoluta (https://...)');
     const url = new URL(urlString);
     const cb  = '__jsonp_' + Math.random().toString(36).slice(2);
     url.searchParams.set('callback', cb);
     const src = url.toString();
-    console.log('JSONP src =>', src); // ← veja no console se está com /exec?os=...&callback=...
-
     return new Promise((resolve, reject)=>{
       const s = document.createElement('script');
       s.src = src;
@@ -255,60 +226,140 @@ estadoSel.addEventListener('change', function() {
     });
   }
 
-  // Busca OS
-  const osInp=document.getElementById('os'),
-        codigoInp=document.getElementById('codigo'),
-        fazendaInp=document.getElementById('fazenda'),
-        areaInp=document.getElementById('area'),
-        operacaoInp=document.getElementById('operacao'),
-        insumosTA=document.getElementById('insumos');
+  // ===== FAZENDAS DINÂMICAS =====
+  const fazendasContainer = document.getElementById('fazendasContainer');
 
-  let debounceTimer;
-  osInp.addEventListener('input',()=>{
-    clearTimeout(debounceTimer);
-    const v=osInp.value.trim();
-    if(!v){clearOSFields();return;}
-    debounceTimer=setTimeout(()=>fetchOS(v),350);
-  });
-  document.getElementById('btnBuscarOS').addEventListener('click',()=>{
-    const v=osInp.value.trim(); if(v) fetchOS(v);
-  });
+  // cria 1 bloco inicial
+  addFazenda();
 
-  function clearOSFields(){ codigoInp.value=''; fazendaInp.value=''; areaInp.value=''; operacaoInp.value=''; insumosTA.value=''; }
+  function addFazenda(prefillOS=''){
+    const idx = Date.now().toString(36);
+    const el = document.createElement('div');
+    el.className = 'fazenda-card';
+    el.dataset.idx = idx;
+    el.innerHTML = `
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-semibold text-secondary"><i class="bi bi-geo-alt"></i> Fazenda</div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" data-add="${idx}">
+            <i class="bi bi-plus-circle"></i> Adicionar
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" data-remove="${idx}">
+            <i class="bi bi-x-lg"></i> Remover
+          </button>
+        </div>
+      </div>
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="os_${idx}">OS</label>
+          <div class="input-group">
+            <input id="os_${idx}" class="form-control" placeholder="Digite a OS">
+            <button class="btn btn-outline-primary" data-buscar="${idx}" title="Buscar OS"><i class="bi bi-search"></i></button>
+          </div>
+          <div class="form-text">Busca automática na planilha.</div>
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label" for="codigo_${idx}">Código</label>
+          <input id="codigo_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-6 col-md-3">
+          <label class="form-label" for="fazenda_${idx}">Fazenda</label>
+          <input id="fazenda_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label" for="area_${idx}">Área (ha)</label>
+          <input id="area_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label" for="operacao_${idx}">Operação</label>
+          <input id="operacao_${idx}" class="form-control" readonly>
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="insumos_${idx}">Insumos</label>
+          <textarea id="insumos_${idx}" class="form-control" rows="2" readonly></textarea>
+        </div>
+      </div>
+    `;
+    fazendasContainer.appendChild(el);
 
-  async function fetchOS(osValue){
+    // eventos do bloco
+    el.querySelector(`[data-remove="${idx}"]`).addEventListener('click', ()=>{ el.remove(); updateResumo(); gerarTexto(); });
+    el.querySelector(`[data-add="${idx}"]`).addEventListener('click', ()=>{ addFazenda(); });
+    el.querySelector(`[data-buscar="${idx}"]`).addEventListener('click', ()=> buscarOS(idx));
+    const osInput = el.querySelector(`#os_${idx}`);
+    osInput.addEventListener('input', ()=>{
+      clearOne(idx);
+      const v = osInput.value.trim();
+      if (!v) return;
+      debounce(()=> buscarOS(idx), 350);
+    });
+
+    if (prefillOS) { osInput.value = prefillOS; buscarOS(idx); }
+  }
+
+  function clearOne(idx){
+    getEl(`#codigo_${idx}`).value='';
+    getEl(`#fazenda_${idx}`).value='';
+    getEl(`#area_${idx}`).value='';
+    getEl(`#operacao_${idx}`).value='';
+    getEl(`#insumos_${idx}`).value='';
+  }
+
+  function getEl(sel){ return document.querySelector(sel); }
+
+  let debTimer;
+  function debounce(fn, t){ clearTimeout(debTimer); debTimer=setTimeout(fn, t); }
+
+  async function buscarOS(idx){
     try{
-      const js = await jsonp(APPS_SCRIPT_URL + '?os=' + encodeURIComponent(osValue));
-      if(!js.ok || !js.rows || !js.rows.length){ clearOSFields(); return; }
+      const osVal = getEl(`#os_${idx}`).value.trim();
+      if(!osVal){ clearOne(idx); updateResumo(); return; }
+      const js = await jsonp(APPS_SCRIPT_URL + '?os=' + encodeURIComponent(osVal));
+      if(!js.ok || !js.rows || !js.rows.length){ clearOne(idx); updateResumo(); return; }
 
-      const row = js.rows.find(x => String(x.OS)===String(osValue)) || js.rows[0];
+      const row = js.rows.find(x => String(x.OS)===String(osVal)) || js.rows[0];
       const get = k => row[k] ?? row[k?.toUpperCase()] ?? '';
 
-      codigoInp.value   = get('CODIGO');
-      fazendaInp.value  = get('FAZENDA');
-      areaInp.value     = (get('AREA (HA)') || '').toString().replace(',','.');
-      operacaoInp.value = get('OPERACAO');
-      insumosTA.value   = get('INSUMOS');
+      getEl(`#codigo_${idx}`).value   = get('CODIGO');
+      getEl(`#fazenda_${idx}`).value  = get('FAZENDA');
+      getEl(`#area_${idx}`).value     = (get('AREA (HA)') || '').toString().replace(',','.');
+      getEl(`#operacao_${idx}`).value = get('OPERACAO');
+      getEl(`#insumos_${idx}`).value  = get('INSUMOS');
 
-      const objetivoSel=document.getElementById('objetivo');
-      const objetivoStr=get('OBJETIVO');
-      if(objetivoStr){
+      // tenta alinhar objetivo do topo, se bater
+      const objetivoSel = document.getElementById('objetivo');
+      const objetivoStr = get('OBJETIVO');
+      if (objetivoStr) {
         [...objetivoSel.options].forEach(o=>{
-          if(o.value.toUpperCase()===String(objetivoStr).toUpperCase()) objetivoSel.value=o.value;
+          if (o.value.toUpperCase() === String(objetivoStr).toUpperCase())
+            objetivoSel.value = o.value;
         });
       }
+
+      updateResumo();
       gerarTexto();
     }catch(e){
       console.error(e);
-      clearOSFields();
+      clearOne(idx); updateResumo();
     }
   }
 
-  // Texto / copiar / Whats
-  const preview=document.getElementById('preview'),
-        badgeFaz=document.getElementById('badgeFaz'),
-        badgeArea=document.getElementById('badgeArea');
+  function updateResumo(){
+    const cards = [...fazendasContainer.querySelectorAll('.fazenda-card')];
+    let totalFaz = 0, totalArea = 0;
+    cards.forEach(c=>{
+      const faz = c.querySelector('[id^="fazenda_"]').value.trim();
+      const areaStr = c.querySelector('[id^="area_"]').value.trim();
+      if (faz) totalFaz++;
+      const v = parseFloat((areaStr||'').toString().replace(',','.'));
+      if (!isNaN(v)) totalArea += v;
+    });
+    document.getElementById('badgeFaz').textContent  = `Fazendas: ${totalFaz}`;
+    document.getElementById('badgeArea').textContent = `Área: ${Number(totalArea.toFixed(2))} ha`;
+  }
 
+  // ===== GERAÇÃO DO TEXTO/WHATS/COPIAR =====
+  const preview=document.getElementById('preview');
   document.getElementById('btnGerar').addEventListener('click', gerarTexto);
   document.getElementById('btnCopiar').addEventListener('click', ()=>{
     navigator.clipboard.writeText(preview.textContent||'').then(()=>{
@@ -326,16 +377,41 @@ estadoSel.addEventListener('change', function() {
     const objetivo=document.getElementById('objetivo').value;
     const tipoProduto=document.getElementById('tipoProduto').value;
 
-    const os      =document.getElementById('os').value;
-    const codigo  =document.getElementById('codigo').value;
-    const fazenda =document.getElementById('fazenda').value;
-    const area    =document.getElementById('area').value;
-    const operacao=document.getElementById('operacao').value;
-    const insumos =document.getElementById('insumos').value;
-    const obs     =document.getElementById('observacoes').value.trim();
+    // Monta blocos por fazenda
+    const cards = [...fazendasContainer.querySelectorAll('.fazenda-card')];
+    let blocos = [];
+    let totalFaz = 0, totalArea = 0;
 
-    const blocoObs = obs ? `\n*Observações:*  ${obs}` : '';
-    const txt = `📅 *Programação para aplicação:* ${data}
+    cards.forEach(c=>{
+      const os       = c.querySelector('[id^="os_"]').value.trim();
+      const codigo   = c.querySelector('[id^="codigo_"]').value.trim();
+      const fazenda  = c.querySelector('[id^="fazenda_"]').value.trim();
+      const areaStr  = c.querySelector('[id^="area_"]').value.trim();
+      const operacao = c.querySelector('[id^="operacao_"]').value.trim();
+      const insumos  = c.querySelector('[id^="insumos_"]').value.trim();
+
+      if (fazenda) totalFaz++;
+      const v = parseFloat((areaStr||'').toString().replace(',','.'));
+      if (!isNaN(v)) totalArea += v;
+
+      // (HA) na frente do número
+      const areaFmt = areaStr ? `(HA) ${areaStr}` : '-';
+
+      const bloco =
+`*📋 OS:* ${os || '-'}
+*Código:* ${codigo || '-'}
+*Fazenda:* ${fazenda || '-'}
+*Área (ha):* ${areaFmt}
+*Operação:* ${operacao || '-'}
+*Insumos:* ${insumos || '-'}`;
+
+      blocos.push(bloco);
+    });
+
+    const obs = ''; // se quiser, pode puxar de um campo geral
+
+    const header =
+`📅 *Programação para aplicação:* ${data}
 
 *Unidade:* ${unidade||'-'}
 *Frente:* ${frente||'-'}
@@ -343,28 +419,19 @@ estadoSel.addEventListener('change', function() {
 *Auxiliar:* ${auxiliar||'-'}
 *Drone:* ${drone||'-'}
 *Objetivo:* ${objetivo||'-'}
-*Tipo de Produto:* ${tipoProduto||'-'}
+*Tipo de Produto:* ${tipoProduto||'-'}`;
 
-*📋 OS:* ${os||'-'}
-*Código:* ${codigo||'-'}
-*Fazenda:* ${fazenda||'-'}
+    const resumo =
+`\n*Resumo:*
+*Qtd. Fazendas:* ${totalFaz}
+*Qtd. Área (ha):* ${Number(totalArea.toFixed(2))}`;
 
-*Área (ha):* ${area||'-'}
-*Operação:* ${operacao||'-'}
-*Insumos:* ${insumos||'-'}${blocoObs}
+    const textoFinal = header + '\n\n' + blocos.join('\n\n') + resumo + (obs ? `\n\n*Observações:* ${obs}` : '');
 
-*Resumo:*
-*Qtd. Fazendas:* ${fazenda ? 1 : 0}
-*Qtd. Área (ha):* ${area || 0}`;
-
-    preview.textContent = txt;
-    badgeFaz.textContent = `Fazendas: ${fazenda?1:0}`;
-    badgeArea.textContent = `Área: ${area||0} ha`;
-    document.getElementById('btnWhats').href = 'https://wa.me/?text=' + encodeURIComponent(txt);
+    preview.textContent = textoFinal;
+    document.getElementById('btnWhats').href = 'https://wa.me/?text=' + encodeURIComponent(textoFinal);
+    updateResumo();
   }
 </script>
 </body>
 </html>
-
-
-
