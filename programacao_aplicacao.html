@@ -9,7 +9,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Favicon embutido para evitar 404 -->
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="%230d6efd"/><path d="M16 40l16-24 16 24H16z" fill="white"/></svg>'>
 
 <style>
@@ -17,6 +16,7 @@
   .card { border-radius:.75rem; }
   .form-section-title{font-weight:600;font-size:1rem;color:#0d6efd;display:flex;align-items:center;gap:.5rem;}
   pre#preview{white-space:pre-wrap;min-height:260px;}
+  label { display:inline-block; margin-bottom:.25rem; }
 </style>
 </head>
 <body>
@@ -26,7 +26,7 @@
     <div class="d-flex align-items-center gap-2">
       <i class="bi bi-calendar-check text-primary fs-4"></i>
       <h1 class="h4 mb-0">Programação de Aplicação — Top Gun</h1>
-      <span class="badge text-bg-light border">v1 (tema claro)</span>
+      <span class="badge text-bg-light border">v1</span>
     </div>
     <a href="index.html" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Voltar para o Início
@@ -34,7 +34,6 @@
   </div>
 
   <div class="row g-3">
-    <!-- FORM -->
     <div class="col-12 col-lg-8">
       <div class="card">
         <div class="card-body">
@@ -42,11 +41,11 @@
 
           <div class="row g-3">
             <div class="col-12 col-md-4">
-              <label class="form-label">Data para aplicação</label>
+              <label for="dataAplicacao" class="form-label">Data para aplicação</label>
               <input type="date" id="dataAplicacao" class="form-control">
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Estado</label>
+              <label for="estado" class="form-label">Estado</label>
               <select id="estado" class="form-select">
                 <option value="">Selecione...</option>
                 <option value="MG">Minas Gerais (MG)</option>
@@ -54,14 +53,14 @@
               </select>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Unidade</label>
+              <label for="unidade" class="form-label">Unidade</label>
               <select id="unidade" class="form-select" disabled>
                 <option value="">Selecione o Estado</option>
               </select>
             </div>
 
             <div class="col-12 col-md-4">
-              <label class="form-label">Frente</label>
+              <label for="frente" class="form-label">Frente</label>
               <select id="frente" class="form-select">
                 <option value="">Selecione...</option>
                 <option value="Frente 1">Frente 1</option>
@@ -74,11 +73,11 @@
               </select>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Piloto</label>
+              <label for="piloto" class="form-label">Piloto</label>
               <input id="piloto" class="form-control" placeholder="Preenchido pela Frente" readonly>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Auxiliar</label>
+              <label for="auxiliar" class="form-label">Auxiliar</label>
               <select id="auxiliar" class="form-select">
                 <option value="">Selecione...</option>
                 <option>Ailton Gabriel</option>
@@ -91,7 +90,7 @@
             </div>
 
             <div class="col-12 col-md-4">
-              <label class="form-label">Drone</label>
+              <label for="drone" class="form-label">Drone</label>
               <select id="drone" class="form-select">
                 <option value="">Selecione...</option>
                 <option>DJI AGRAS T20</option>
@@ -101,7 +100,7 @@
               </select>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Objetivo</label>
+              <label for="objetivo" class="form-label">Objetivo</label>
               <select id="objetivo" class="form-select">
                 <option value="">Selecione...</option>
                 <option>Área Total</option>
@@ -109,7 +108,7 @@
               </select>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Tipo de Produto</label>
+              <label for="tipoProduto" class="form-label">Tipo de Produto</label>
               <select id="tipoProduto" class="form-select">
                 <option value="">Selecione...</option>
                 <option>Herbicida</option>
@@ -121,9 +120,8 @@
 
             <div class="col-12"><hr></div>
 
-            <!-- OS + Buscar -->
             <div class="col-12 col-md-6">
-              <label class="form-label">OS</label>
+              <label for="os" class="form-label">OS</label>
               <div class="input-group">
                 <input id="os" class="form-control" placeholder="Digite a OS">
                 <button id="btnBuscarOS" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
@@ -131,28 +129,28 @@
               <div class="form-text">Busca automática na planilha.</div>
             </div>
             <div class="col-12 col-md-3">
-              <label class="form-label">Código</label>
+              <label for="codigo" class="form-label">Código</label>
               <input id="codigo" class="form-control" readonly>
             </div>
             <div class="col-12 col-md-3">
-              <label class="form-label">Fazenda</label>
+              <label for="fazenda" class="form-label">Fazenda</label>
               <input id="fazenda" class="form-control" readonly>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Área (ha)</label>
+              <label for="area" class="form-label">Área (ha)</label>
               <input id="area" class="form-control" readonly>
             </div>
             <div class="col-12 col-md-4">
-              <label class="form-label">Operação</label>
+              <label for="operacao" class="form-label">Operação</label>
               <input id="operacao" class="form-control" readonly>
             </div>
             <div class="col-12">
-              <label class="form-label">Insumos</label>
+              <label for="insumos" class="form-label">Insumos</label>
               <textarea id="insumos" class="form-control" rows="2" readonly></textarea>
             </div>
 
             <div class="col-12">
-              <label class="form-label">Observações (opcional)</label>
+              <label for="observacoes" class="form-label">Observações (opcional)</label>
               <textarea id="observacoes" class="form-control" rows="2" placeholder="Preencha apenas se necessário"></textarea>
             </div>
 
@@ -166,7 +164,7 @@
       </div>
     </div>
 
-    <!-- Prévia -->
+    <!-- Preview -->
     <div class="col-12 col-lg-4">
       <div class="card h-100">
         <div class="card-body">
@@ -199,10 +197,8 @@
 </div>
 
 <script>
-  // 🔗 URL absoluta do seu Apps Script (precisa começar com https://)
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyumH5NY1N8AwoeQRpsvRQwUsCReGEwDQPYhX36iPGnxmgTcxc02tEZ5qe6QnLixOB2/exec';
 
-  // ======= Dados estáticos =======
   const FRentesPilotos = {
     'Frente 1':'Matheus Pias','Frente 2':'Maicon Silva','Frente 3':'Alexandre Alves',
     'Frente 4':'Felipe Santos','Frente 5':'Luiz Paulo','Frente 6':'Sem Piloto Cadastrado na Frente','Frente 7':'Heitor Ferreira'
@@ -213,11 +209,10 @@
   };
 
   // Estado → Unidade
-  const estadoSel=document.getElementById('estado');
-  const unidadeSel=document.getElementById('unidade');
-  estadoSel.addEventListener('change',()=>{
+  estadoSel.addEventListener?.call(document.getElementById('estado'),'change',function(){
+    const unidadeSel=document.getElementById('unidade');
     unidadeSel.innerHTML='';
-    const uf=estadoSel.value;
+    const uf=this.value;
     if(!uf){unidadeSel.disabled=true;unidadeSel.innerHTML='<option>Selecione o Estado</option>';return;}
     unidadeSel.disabled=false;
     unidadeSel.insertAdjacentHTML('beforeend','<option value="">Selecione...</option>');
@@ -227,39 +222,30 @@
   });
 
   // Frente → Piloto
-  const frenteSel=document.getElementById('frente');
-  const pilotoInp=document.getElementById('piloto');
-  frenteSel.addEventListener('change',()=>{pilotoInp.value=frenteSel.value?(FRentesPilotos[frenteSel.value]||''):'';});
+  document.getElementById('frente').addEventListener('change',function(){
+    document.getElementById('piloto').value = this.value ? (FRentesPilotos[this.value]||'') : '';
+  });
 
-  // ===== JSONP helper (robusto) =====
-  function jsonpAbs(urlString){
-    if(!/^https?:\/\//i.test(urlString)){
-      throw new Error('URL inválida para JSONP (esperado https://...)');
-    }
+  // ===== JSONP helper com log do src =====
+  function jsonp(urlString){
+    if(!/^https?:\/\//i.test(urlString)) throw new Error('URL JSONP precisa ser absoluta (https://...)');
     const url = new URL(urlString);
-    // força callback
-    url.searchParams.set('callback', '__jsonp_'+Math.random().toString(36).slice(2));
-    const cb = url.searchParams.get('callback');
+    const cb  = '__jsonp_' + Math.random().toString(36).slice(2);
+    url.searchParams.set('callback', cb);
+    const src = url.toString();
+    console.log('JSONP src =>', src); // ← veja no console se está com /exec?os=...&callback=...
 
     return new Promise((resolve, reject)=>{
       const s = document.createElement('script');
-      s.src = url.toString();
-      // debug opcional:
-      // console.log('JSONP src =>', s.src);
-      window[cb] = (data)=>{
-        resolve(data);
-        cleanup();
-      };
+      s.src = src;
+      window[cb] = (data)=>{ resolve(data); cleanup(); };
       s.onerror = ()=>{ reject(new Error('Falha no JSONP')); cleanup(); };
-      function cleanup(){
-        delete window[cb];
-        s.remove();
-      }
+      function cleanup(){ delete window[cb]; s.remove(); }
       document.body.appendChild(s);
     });
   }
 
-  // ===== Busca por OS (auto + botão) =====
+  // Busca OS
   const osInp=document.getElementById('os'),
         codigoInp=document.getElementById('codigo'),
         fazendaInp=document.getElementById('fazenda'),
@@ -278,15 +264,11 @@
     const v=osInp.value.trim(); if(v) fetchOS(v);
   });
 
-  function clearOSFields(){
-    codigoInp.value=''; fazendaInp.value=''; areaInp.value='';
-    operacaoInp.value=''; insumosTA.value='';
-  }
+  function clearOSFields(){ codigoInp.value=''; fazendaInp.value=''; areaInp.value=''; operacaoInp.value=''; insumosTA.value=''; }
 
   async function fetchOS(osValue){
     try{
-      const url = APPS_SCRIPT_URL + '?os=' + encodeURIComponent(osValue);
-      const js  = await jsonpAbs(url); // JSONP (sem CORS)
+      const js = await jsonp(APPS_SCRIPT_URL + '?os=' + encodeURIComponent(osValue));
       if(!js.ok || !js.rows || !js.rows.length){ clearOSFields(); return; }
 
       const row = js.rows.find(x => String(x.OS)===String(osValue)) || js.rows[0];
@@ -298,12 +280,11 @@
       operacaoInp.value = get('OPERACAO');
       insumosTA.value   = get('INSUMOS');
 
-      const objetivoSel = document.getElementById('objetivo');
-      const objetivoStr = get('OBJETIVO');
-      if (objetivoStr) {
+      const objetivoSel=document.getElementById('objetivo');
+      const objetivoStr=get('OBJETIVO');
+      if(objetivoStr){
         [...objetivoSel.options].forEach(o=>{
-          if (o.value.toUpperCase() === String(objetivoStr).toUpperCase())
-            objetivoSel.value = o.value;
+          if(o.value.toUpperCase()===String(objetivoStr).toUpperCase()) objetivoSel.value=o.value;
         });
       }
       gerarTexto();
@@ -313,17 +294,14 @@
     }
   }
 
-  // ===== Geração de texto / copiar / Whats =====
+  // Texto / copiar / Whats
   const preview=document.getElementById('preview'),
         badgeFaz=document.getElementById('badgeFaz'),
-        badgeArea=document.getElementById('badgeArea'),
-        btnGerar=document.getElementById('btnGerar'),
-        btnCopiar=document.getElementById('btnCopiar'),
-        btnWhats=document.getElementById('btnWhats');
+        badgeArea=document.getElementById('badgeArea');
 
-  btnGerar.addEventListener('click', gerarTexto);
-  btnCopiar.addEventListener('click', ()=>{
-    navigator.clipboard.writeText(preview.textContent || '').then(()=>{
+  document.getElementById('btnGerar').addEventListener('click', gerarTexto);
+  document.getElementById('btnCopiar').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(preview.textContent||'').then(()=>{
       new bootstrap.Toast(document.getElementById('toastCopiado')).show();
     });
   });
@@ -336,7 +314,7 @@
     const auxiliar=document.getElementById('auxiliar').value;
     const drone  =document.getElementById('drone').value;
     const objetivo=document.getElementById('objetivo').value;
-    const tipoProd=document.getElementById('tipoProduto').value;
+    const tipoProduto=document.getElementById('tipoProduto').value;
 
     const os      =document.getElementById('os').value;
     const codigo  =document.getElementById('codigo').value;
@@ -347,34 +325,32 @@
     const obs     =document.getElementById('observacoes').value.trim();
 
     const blocoObs = obs ? `\n*Observações:*  ${obs}` : '';
+    const txt = `📅 *Programação para aplicação:* ${data}
 
-    const txt =
-`📅 *Programação para aplicação:* ${data}
+*Unidade:* ${unidade||'-'}
+*Frente:* ${frente||'-'}
+*Piloto:* ${piloto||'-'}
+*Auxiliar:* ${auxiliar||'-'}
+*Drone:* ${drone||'-'}
+*Objetivo:* ${objetivo||'-'}
+*Tipo de Produto:* ${tipoProduto||'-'}
 
-*Unidade:* ${unidade || '-'}
-*Frente:* ${frente || '-'}
-*Piloto:* ${piloto || '-'}
-*Auxiliar:* ${auxiliar || '-'}
-*Drone:* ${drone || '-'}
-*Objetivo:* ${objetivo || '-'}
-*Tipo de Produto:* ${tipoProd || '-'}
+*📋 OS:* ${os||'-'}
+*Código:* ${codigo||'-'}
+*Fazenda:* ${fazenda||'-'}
 
-*📋 OS:* ${os || '-'}
-*Código:* ${codigo || '-'}
-*Fazenda:* ${fazenda || '-'}
-
-*Área (ha):* ${area || '-'}
-*Operação:* ${operacao || '-'}
-*Insumos:* ${insumos || '-'}${blocoObs}
+*Área (ha):* ${area||'-'}
+*Operação:* ${operacao||'-'}
+*Insumos:* ${insumos||'-'}${blocoObs}
 
 *Resumo:*
 *Qtd. Fazendas:* ${fazenda ? 1 : 0}
 *Qtd. Área (ha):* ${area || 0}`;
 
     preview.textContent = txt;
-    badgeFaz.textContent  = `Fazendas: ${fazenda ? 1 : 0}`;
-    badgeArea.textContent = `Área: ${area || 0} ha`;
-    btnWhats.href = 'https://wa.me/?text=' + encodeURIComponent(txt);
+    badgeFaz.textContent = `Fazendas: ${fazenda?1:0}`;
+    badgeArea.textContent = `Área: ${area||0} ha`;
+    document.getElementById('btnWhats').href = 'https://wa.me/?text=' + encodeURIComponent(txt);
   }
 </script>
 </body>
